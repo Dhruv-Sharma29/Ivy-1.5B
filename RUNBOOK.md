@@ -90,13 +90,24 @@ DATA=data/sft/v1-train.jsonl EVALS="$E" BSZ=8 ACCUM=8 PYTHONPATH=src sh scripts/
 
 Scores land in `checkpoints/sft-<name>/score_<set>.json`.
 
-## 5. Kaggle dataset and notebook
+## 5. Kaggle datasets and notebook
+
+Published (private until made public): datasets
+[`dhruvsharma2905/ivy-experiments`](https://www.kaggle.com/datasets/dhruvsharma2905/ivy-experiments) (results) and
+[`dhruvsharma2905/ivy-tool-use-sft`](https://www.kaggle.com/datasets/dhruvsharma2905/ivy-tool-use-sft) (tool-use training
+data), and the notebook
+[`ivy-small-lm-experiments`](https://www.kaggle.com/code/dhruvsharma2905/ivy-small-lm-experiments).
 
 ```bash
-python3 scripts/build_kaggle_dataset.py --owner YOUR_KAGGLE_USERNAME   # -> kaggle/ivy-experiments/ (~6.6 MB, 64 files)
-python3 scripts/make_kaggle_notebook.py                                # needs nbformat; writes kaggle/ivy_experiments.ipynb
+python3 scripts/build_kaggle_dataset.py --which results --owner dhruvsharma2905   # -> kaggle/ivy-experiments/ (103 files)
+python3 scripts/build_kaggle_dataset.py --which sft --owner dhruvsharma2905       # -> kaggle/ivy-tool-use-sft/ (11 files)
+python3 scripts/make_kaggle_notebook.py                                           # needs nbformat
+export KAGGLE_API_TOKEN=...                                                       # your own token, never committed
+kaggle datasets create -p kaggle/ivy-experiments --dir-mode zip                   # first time; afterwards:
+kaggle datasets version -p kaggle/ivy-experiments --dir-mode zip -m "what changed"
+kaggle kernels push -p kaggle                                                     # notebook, via kaggle/kernel-metadata.json
 ```
 
-The builder fails if any expected result file is missing. To publish: `kaggle datasets create -p kaggle/ivy-experiments`
-(the metadata marks the dataset private and its licence `unknown` until you choose one), then attach the dataset to a new Kaggle
-notebook and upload `kaggle/ivy_experiments.ipynb`. Locally, run it with `IVY_DATA=kaggle/ivy-experiments jupyter execute ...`.
+The builder fails if any expected result file is missing. `--dir-mode zip` is required: without it the CLI skips the
+`runs/`, `reports/`, `evals/` and `sft/` folders. Datasets are created private with licence `unknown` until one is chosen.
+Locally, run the notebook with `IVY_DATA=kaggle/ivy-experiments jupyter execute kaggle/ivy_experiments.ipynb`.

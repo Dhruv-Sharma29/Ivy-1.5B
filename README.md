@@ -78,7 +78,10 @@ Three model configurations: **40.9M**, **307.3M** and **1.46B** parameters, all 
 </picture>
 
 Tables, intervals, paired tests and caveats: [07 — Results](docs/07-results.md). The
-[experiments notebook](kaggle/ivy_experiments.ipynb) reproduces every chart.
+[experiments notebook](kaggle/ivy_experiments.ipynb) reproduces every chart. On Kaggle: the results dataset
+[`ivy-experiments`](https://www.kaggle.com/datasets/dhruvsharma2905/ivy-experiments), the tool-use training data
+[`ivy-tool-use-sft`](https://www.kaggle.com/datasets/dhruvsharma2905/ivy-tool-use-sft) and the
+[notebook](https://www.kaggle.com/code/dhruvsharma2905/ivy-small-lm-experiments).
 
 ## Design decisions
 
