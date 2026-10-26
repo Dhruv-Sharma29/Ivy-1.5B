@@ -1,0 +1,6 @@
+{"ckpt": "checkpoints/ivy-40m-lr-2.4e-3-100M/latest.pt", "model": "ivy-40m", "params": 40903168, "tokens_seen": 98304000, "web": 3.9984, "math": 2.9094, "mix": 3.843, "windows": 384, "seq_len": 2048, "seed": 20261023}
+{"ckpt": "checkpoints/ivy-40m-scale-300M-lr-2.4e-3/latest.pt", "model": "ivy-40m", "params": 40903168, "tokens_seen": 300023808, "web": 3.5877, "math": 2.522, "mix": 3.4393, "windows": 384, "seq_len": 2048, "seed": 20261023}
+{"ckpt": "checkpoints/ivy-40m-scale-1000M-lr-2.4e-3/latest.pt", "model": "ivy-40m", "params": 40903168, "tokens_seen": 1000013824, "web": 3.3414, "math": 2.287, "mix": 3.1967, "windows": 384, "seq_len": 2048, "seed": 20261023}
+{"ckpt": "checkpoints/ivy-300m-scale-300M-lr-1.2e-3/latest.pt", "model": "ivy-300m", "params": 307270656, "tokens_seen": 300023808, "web": 3.4205, "math": 2.3729, "mix": 3.2752, "windows": 384, "seq_len": 2048, "seed": 20261023}
+{"ckpt": "checkpoints/ivy-300m-lr-1.2e-3/latest.pt", "model": "ivy-300m", "params": 307270656, "tokens_seen": 98304000, "web": 3.9291, "math": 2.8534, "mix": 3.7807, "windows": 384, "seq_len": 2048, "seed": 20261023}
+{"ckpt": "checkpoints/ivy-300m-rep-seed4321-lr-1.2e-3/latest.pt", "model": "ivy-300m", "params": 307270656, "tokens_seen": 98304000, "web": 3.9207, "math": 2.8416, "mix": 3.7723, "windows": 384, "seq_len": 2048, "seed": 20261023}

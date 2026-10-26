@@ -1,0 +1,13 @@
+{
+  "config": "ivy-40m",
+  "params": 40903168,
+  "micro_bsz": 8,
+  "accum": 4,
+  "seq_len": 2048,
+  "grad_ckpt": false,
+  "compile": true,
+  "full_logits": false,
+  "tokens_per_s": 52885.5,
+  "peak_torch_alloc_gb": 4.72,
+  "note": "synthetic tokens; excludes data loading, checkpointing, eval"
+}

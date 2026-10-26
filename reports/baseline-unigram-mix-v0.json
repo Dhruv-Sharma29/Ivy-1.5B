@@ -1,0 +1,7 @@
+{
+ "uniform_ln_vocab": 10.39720770839918,
+ "unigram_val_nll": 7.3327,
+ "unigram_train_entropy": 7.4546,
+ "train_tokens": 100000928,
+ "val_tokens": 510089
+}

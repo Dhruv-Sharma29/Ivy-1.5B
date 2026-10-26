@@ -1,0 +1,15 @@
+{
+  "config": "ivy-300m",
+  "params": 307270656,
+  "micro_bsz": 4,
+  "accum": 2,
+  "seq_len": 2048,
+  "grad_ckpt": false,
+  "compile": false,
+  "full_logits": false,
+  "precision": "bf16",
+  "attn_block": 512,
+  "tokens_per_s": 2302.8,
+  "peak_torch_alloc_gb": 30.01,
+  "note": "synthetic tokens; excludes data loading, checkpointing, eval"
+}

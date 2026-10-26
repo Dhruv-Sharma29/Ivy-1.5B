@@ -1,0 +1,165 @@
+{
+  "config": "ivy-300m",
+  "params": 307270656,
+  "windows": [
+    {
+      "step": 50,
+      "elapsed_min": 3.6,
+      "tok_per_s": 15879.0,
+      "loss_mean": 10.5077,
+      "ckpt_save_s": 9.0,
+      "ckpt_gb": 3.43,
+      "peak_torch_gb": 12.9,
+      "sys_mem_used_gb": 68.5,
+      "power_w": "16.00",
+      "temp_c": "63",
+      "sm_clock_mhz": "2411"
+    },
+    {
+      "step": 100,
+      "elapsed_min": 7.2,
+      "tok_per_s": 15959.0,
+      "loss_mean": 10.4264,
+      "ckpt_save_s": 9.1,
+      "ckpt_gb": 3.43,
+      "peak_torch_gb": 12.9,
+      "sys_mem_used_gb": 68.7,
+      "power_w": "15.82",
+      "temp_c": "65",
+      "sm_clock_mhz": "2411"
+    },
+    {
+      "step": 150,
+      "elapsed_min": 10.7,
+      "tok_per_s": 15970.0,
+      "loss_mean": 10.4213,
+      "ckpt_save_s": 8.9,
+      "ckpt_gb": 3.43,
+      "peak_torch_gb": 12.9,
+      "sys_mem_used_gb": 68.9,
+      "power_w": "15.91",
+      "temp_c": "65",
+      "sm_clock_mhz": "2411"
+    },
+    {
+      "step": 200,
+      "elapsed_min": 14.3,
+      "tok_per_s": 15990.0,
+      "loss_mean": 10.4146,
+      "ckpt_save_s": 9.2,
+      "ckpt_gb": 3.43,
+      "peak_torch_gb": 12.9,
+      "sys_mem_used_gb": 69.1,
+      "power_w": "15.64",
+      "temp_c": "64",
+      "sm_clock_mhz": "2411"
+    },
+    {
+      "step": 250,
+      "elapsed_min": 17.9,
+      "tok_per_s": 15992.0,
+      "loss_mean": 10.4111,
+      "ckpt_save_s": 9.1,
+      "ckpt_gb": 3.43,
+      "peak_torch_gb": 12.9,
+      "sys_mem_used_gb": 68.9,
+      "power_w": "15.83",
+      "temp_c": "64",
+      "sm_clock_mhz": "2385"
+    },
+    {
+      "step": 304,
+      "elapsed_min": 22.1,
+      "tok_per_s": 15977.0,
+      "loss_mean": 10.4089,
+      "ckpt_save_s": 9.0,
+      "ckpt_gb": 3.43,
+      "peak_torch_gb": 12.9,
+      "sys_mem_used_gb": 68.9,
+      "power_w": "16.10",
+      "temp_c": "64",
+      "sm_clock_mhz": "2411"
+    },
+    {
+      "step": 354,
+      "elapsed_min": 25.7,
+      "tok_per_s": 15978.0,
+      "loss_mean": 10.4076,
+      "ckpt_save_s": 8.6,
+      "ckpt_gb": 3.43,
+      "peak_torch_gb": 12.9,
+      "sys_mem_used_gb": 68.8,
+      "power_w": "16.10",
+      "temp_c": "64",
+      "sm_clock_mhz": "2411"
+    },
+    {
+      "step": 404,
+      "elapsed_min": 29.3,
+      "tok_per_s": 15969.0,
+      "loss_mean": 10.4067,
+      "ckpt_save_s": 8.6,
+      "ckpt_gb": 3.43,
+      "peak_torch_gb": 12.9,
+      "sys_mem_used_gb": 68.8,
+      "power_w": "16.23",
+      "temp_c": "65",
+      "sm_clock_mhz": "2411"
+    },
+    {
+      "step": 454,
+      "elapsed_min": 32.8,
+      "tok_per_s": 15984.0,
+      "loss_mean": 10.4058,
+      "ckpt_save_s": 8.3,
+      "ckpt_gb": 3.43,
+      "peak_torch_gb": 12.9,
+      "sys_mem_used_gb": 69.1,
+      "power_w": "15.78",
+      "temp_c": "65",
+      "sm_clock_mhz": "2411"
+    },
+    {
+      "step": 504,
+      "elapsed_min": 36.4,
+      "tok_per_s": 15969.0,
+      "loss_mean": 10.4053,
+      "ckpt_save_s": 8.3,
+      "ckpt_gb": 3.43,
+      "peak_torch_gb": 12.9,
+      "sys_mem_used_gb": 69.3,
+      "power_w": "16.14",
+      "temp_c": "65",
+      "sm_clock_mhz": "2411"
+    }
+  ],
+  "events": [
+    {
+      "event": "inprocess_resume_check",
+      "at_step": 250,
+      "ckpt_load_s": 0.5,
+      "ref": [
+        10.4099,
+        10.41121,
+        10.40991,
+        10.41098
+      ],
+      "replay": [
+        10.4099,
+        10.41121,
+        10.40991,
+        10.41099
+      ],
+      "max_abs_diff": 2.86102294921875e-06
+    }
+  ],
+  "summary": {
+    "steps": 504,
+    "minutes": 36.4,
+    "tok_per_s_first": 15879.0,
+    "tok_per_s_last": 15969.0,
+    "tok_per_s_min": 15879.0,
+    "tok_per_s_max": 15992.0,
+    "tokens_seen": 33030144
+  }
+}

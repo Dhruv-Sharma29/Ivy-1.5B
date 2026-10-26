@@ -1,0 +1,12 @@
+{
+  "config": "ivy-1.5b",
+  "params": 1461831680,
+  "micro_bsz": 1,
+  "accum": 8,
+  "seq_len": 2048,
+  "grad_ckpt": true,
+  "compile": false,
+  "tokens_per_s": 343.2,
+  "peak_torch_alloc_gb": 27.39,
+  "note": "synthetic tokens; excludes data loading, checkpointing, eval"
+}

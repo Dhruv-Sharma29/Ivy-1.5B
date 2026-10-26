@@ -1,0 +1,193 @@
+[
+  {
+    "path": "tokenizer/ivy-bpe-32k-candidate",
+    "vocab": 32768,
+    "split_digits": false,
+    "sha256": "ba4191ba5536916b",
+    "heldout": {
+      "web (FineWeb-Edu)": {
+        "docs": 1681,
+        "tokens": 1765456,
+        "chars_per_token": 4.531,
+        "roundtrip_exact_first300": "300/300",
+        "vocab_used_frac": 0.934
+      },
+      "math (FineMath)": {
+        "docs": 14087,
+        "tokens": 567149,
+        "chars_per_token": 3.497,
+        "roundtrip_exact_first300": "300/300",
+        "vocab_used_frac": 0.5
+      }
+    },
+    "probes": {
+      "json_tool_call": {
+        "tokens": 58,
+        "chars_per_token": 2.22
+      },
+      "python": {
+        "tokens": 54,
+        "chars_per_token": 2.33
+      },
+      "swift": {
+        "tokens": 40,
+        "chars_per_token": 2.65
+      },
+      "shell": {
+        "tokens": 31,
+        "chars_per_token": 2.06
+      },
+      "latex": {
+        "tokens": 43,
+        "chars_per_token": 1.7
+      },
+      "numbers": {
+        "tokens": 24,
+        "chars_per_token": 2.88
+      },
+      "path_url": {
+        "tokens": 50,
+        "chars_per_token": 2.24
+      },
+      "emoji": {
+        "tokens": 13,
+        "chars_per_token": 2.46
+      },
+      "hindi (out of scope)": {
+        "tokens": 36,
+        "chars_per_token": 0.75
+      },
+      "_numbers_tokens": [
+        "The",
+        "Ġpopulation",
+        "Ġwas",
+        "Ġ1",
+        ",",
+        "234",
+        ",",
+        "5",
+        "67",
+        "Ġin",
+        "Ġ2024",
+        ",",
+        "Ġgrowing",
+        "Ġ3",
+        ".",
+        "14",
+        "159",
+        "%",
+        "Ġto",
+        "Ġ78",
+        "90",
+        "123",
+        "456",
+        "."
+      ]
+    }
+  },
+  {
+    "path": "tokenizer/ivy-bpe-32k-digits-candidate",
+    "vocab": 32768,
+    "split_digits": true,
+    "sha256": "10063dc2aa1ed7d6",
+    "heldout": {
+      "web (FineWeb-Edu)": {
+        "docs": 1681,
+        "tokens": 1826894,
+        "chars_per_token": 4.379,
+        "roundtrip_exact_first300": "300/300",
+        "vocab_used_frac": 0.93
+      },
+      "math (FineMath)": {
+        "docs": 14087,
+        "tokens": 613860,
+        "chars_per_token": 3.231,
+        "roundtrip_exact_first300": "300/300",
+        "vocab_used_frac": 0.484
+      }
+    },
+    "probes": {
+      "json_tool_call": {
+        "tokens": 58,
+        "chars_per_token": 2.22
+      },
+      "python": {
+        "tokens": 58,
+        "chars_per_token": 2.17
+      },
+      "swift": {
+        "tokens": 40,
+        "chars_per_token": 2.65
+      },
+      "shell": {
+        "tokens": 31,
+        "chars_per_token": 2.06
+      },
+      "latex": {
+        "tokens": 43,
+        "chars_per_token": 1.7
+      },
+      "numbers": {
+        "tokens": 43,
+        "chars_per_token": 1.6
+      },
+      "path_url": {
+        "tokens": 50,
+        "chars_per_token": 2.24
+      },
+      "emoji": {
+        "tokens": 13,
+        "chars_per_token": 2.46
+      },
+      "hindi (out of scope)": {
+        "tokens": 36,
+        "chars_per_token": 0.75
+      },
+      "_numbers_tokens": [
+        "The",
+        "Ġpopulation",
+        "Ġwas",
+        "Ġ",
+        "1",
+        ",",
+        "2",
+        "3",
+        "4",
+        ",",
+        "5",
+        "6",
+        "7",
+        "Ġin",
+        "Ġ",
+        "2",
+        "0",
+        "2",
+        "4",
+        ",",
+        "Ġgrowing",
+        "Ġ",
+        "3",
+        ".",
+        "1",
+        "4",
+        "1",
+        "5",
+        "9",
+        "%",
+        "Ġto",
+        "Ġ",
+        "7",
+        "8",
+        "9",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "."
+      ]
+    }
+  }
+]
