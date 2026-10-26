@@ -4,6 +4,8 @@ checkpoints/
 outputs/
 runs/
 kaggle/ivy-experiments/
+kaggle/ivy-tool-use-sft/
+kaggle/notebook/
 kaggle/*.zip
 *.pt
 *.pth
