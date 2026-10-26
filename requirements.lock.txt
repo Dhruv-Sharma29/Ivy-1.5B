@@ -1,0 +1,8 @@
+datasets==5.0.1
+numpy==2.5.3
+pytest==9.1.1
+safetensors==0.8.0
+tokenizers==0.23.2
+torch==2.13.0+cu130
+transformers==5.18.0
+triton==3.7.1

@@ -1,0 +1,29 @@
+# large or machine-local: weights and data go to Hugging Face / Kaggle, never git
+data/
+checkpoints/
+outputs/
+runs/
+kaggle/ivy-experiments/
+kaggle/*.zip
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.safetensors
+*.gguf
+# rejected tokenizer candidates (only the frozen tokenizer/ivy-bpe-32k is used)
+tokenizer/*-candidate/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+.env
+*.key
+
+# internal planning and working notes (kept local, not published)
+PLAN.md
+docs/UPLOAD_PLAN.md
+docs/PHASE0_DECISIONS.md
+REMAINING.md
+.ipynb_checkpoints/
