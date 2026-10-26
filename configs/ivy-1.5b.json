@@ -1,0 +1,1 @@
+{"name":"ivy-1.5b","n_layers":28,"d_model":2048,"n_heads":16,"n_kv_heads":4,"d_ff":6400,"vocab_size":32768,"max_seq_len":2048,"rope_theta":10000.0,"norm_eps":1e-5,"tie_embeddings":true}
