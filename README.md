@@ -26,7 +26,25 @@ $ python3 evals/score.py --scenarios evals/sft_heldout.jsonl --outputs out.jsonl
 $ PYTHONPATH=src .venv/bin/python -m ivy_model.export_hf --config … --ckpt … --out export/ivy-hf   # then GGUF
 ```
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/seen-vs-unseen-dark.png">
+  <img alt="Bar chart: fine-tuned 40M and 300M models score about 92% on familiar phrasings but 56% and 45% on held-out phrasings they never saw in training; trained on all templates they score 90% and 93% on the same held-out set." src="docs/assets/seen-vs-unseen-light.png" width="860">
+</picture>
+
+*The headline result: the same models that score ~92% on familiar phrasings drop to 45–56% on phrasings held out of training.*
+
 ## How it works
+
+```mermaid
+flowchart LR
+    A["FineWeb-Edu + FineMath<br/>(ODC-By)"] --> B["Cleaning<br/>dedup · scrub · balanced sampling"]
+    B --> C["Frozen 32k tokenizer<br/>2.0B-token corpus"]
+    C --> D["Pretraining<br/>40M · 300M · 1.5B configs"]
+    T["Hand-written templates<br/>train / held-out split"] --> E
+    D --> E["Tool-use fine-tuning<br/>one JSON action per turn"]
+    E --> F["Evaluation<br/>exact scoring · unsafe actions"]
+    E --> G["Export<br/>HF Llama → GGUF → M4"]
+```
 
 | Stage | What happens | Doc |
 |---|---|---|
@@ -46,8 +64,18 @@ Three model configurations: **40.9M**, **307.3M** and **1.46B** parameters, all 
 | Best peak learning rate | 2.4e-3 at 40M, 1.2e-3 at 300M, both inside the tested range; seed noise ≈ 0.004 nats |
 | More parameters or more data? | 40M on 1B tokens (loss 3.197) beats 300M on 300M tokens (3.275) at about half the compute |
 | Does tool-use fine-tuning generalise? | **Not yet.** ~92% on familiar phrasings, **45–57% on held-out phrasings** |
-| Does a bigger model generalise better? | **No robust evidence.** 40M-vs-300M differences change sign between template splits |
+| Does a bigger model generalise better? | **No evidence yet.** On unseen phrasings 300M never beats 40M; other metrics flip between template splits |
 | How long to fine-tune? | 1 epoch beats 3 at 300M (53.0% vs 45.3% held-out, p < 0.0001); fine-tuning loss cannot show this |
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/loss-vs-compute-dark.png">
+  <img alt="Line chart of validation loss against training compute: a 40M model trained on 1B tokens reaches 3.197, below a 300M model trained on 300M tokens at 3.275, with about half the compute." src="docs/assets/loss-vs-compute-light.png" width="860">
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/split-sensitivity-dark.png">
+  <img alt="Bar chart of held-out accuracy for 40M and 300M models across three conditions: split 1 with 3 epochs (56% vs 45%), split 1 with 1 epoch (57% vs 53%), and an independent split 2 with 1 epoch (55% vs 45%)." src="docs/assets/split-sensitivity-light.png" width="860">
+</picture>
 
 Tables, intervals, paired tests and caveats: [07 — Results](docs/07-results.md). The
 [experiments notebook](kaggle/ivy_experiments.ipynb) reproduces every chart.
