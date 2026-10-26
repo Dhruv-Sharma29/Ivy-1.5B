@@ -1,0 +1,16 @@
+diff --git a/conversion/base.py b/conversion/base.py
+index 0f3bd9a..0ec310f 100644
+--- a/conversion/base.py
++++ b/conversion/base.py
+@@ -1942,6 +1942,11 @@ class TextModel(ModelBase):
+             # ref: https://huggingface.co/jhu-clsp/mmBERT-base
+             res = "mmbert"
+ 
++        if chkhsh == "c4e6f0fc3eb51c51b5b6c25aae485a84698db2d1ec7681592cbdc7e0381c2e17":
++            # ref: Ivy-1.5B frozen tokenizer (tokenizer/ivy-bpe-32k): Digits(individual) + GPT-2 ByteLevel regex,
++            # which is what llama.cpp's "starcoder" pre-tokenizer implements
++            res = "starcoder"
++
+         if res is None:
+             logger.warning("\n")
+             logger.warning("**************************************************************************************")

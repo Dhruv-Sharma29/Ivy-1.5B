@@ -1,0 +1,15 @@
+{
+  "frozen": true,
+  "date": "2026-10-06",
+  "sha256": "10063dc2aa1ed7d66cec8edf35fc25d35133d133fc2d0cb119178cf49507eea0",
+  "vocab_size": 32768,
+  "split_digits": true,
+  "language_scope": "English only (user decision 2026-10-06)",
+  "training_data": "FineWeb-Edu sample-10BT (365M chars) + FineMath finemath-4plus (50M chars); no code",
+  "known_limits": [
+    "no code/JSON in training text: JSON tool calls cost ~15-20% more tokens than GPT-2/Llama-2 tokenizers",
+    "digits are single tokens; a leading space before a number is its own token",
+    "Hindi/Devanagari is out of scope and tokenises inefficiently"
+  ],
+  "rule": "Do not retrain, reorder or insert special tokens for this model. A change means a new tokenizer and a new pretraining run."
+}

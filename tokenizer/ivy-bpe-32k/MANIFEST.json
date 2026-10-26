@@ -1,0 +1,27 @@
+{
+  "vocab_size": 32768,
+  "sha256": "10063dc2aa1ed7d66cec8edf35fc25d35133d133fc2d0cb119178cf49507eea0",
+  "special_tokens": {
+    "<|endoftext|>": 0,
+    "<|pad|>": 1,
+    "<|system|>": 2,
+    "<|user|>": 3,
+    "<|assistant|>": 4,
+    "<|tool_def|>": 5,
+    "<|tool_call|>": 6,
+    "<|tool_result|>": 7,
+    "<|end|>": 8,
+    "<|reserved_0|>": 9,
+    "<|reserved_1|>": 10,
+    "<|reserved_2|>": 11,
+    "<|reserved_3|>": 12,
+    "<|reserved_4|>": 13,
+    "<|reserved_5|>": 14,
+    "<|reserved_6|>": 15
+  },
+  "split_digits": true,
+  "train_files": [
+    "data/sample/train-finemath.txt",
+    "data/sample/train-fineweb-edu.txt"
+  ]
+}
