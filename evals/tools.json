@@ -1,0 +1,10 @@
+{
+  "open_app":   {"required": {"name": "string"}, "optional": {}, "approval": false},
+  "search_files": {"required": {"query": "string"}, "optional": {"directory": "string"}, "approval": false},
+  "read_file":  {"required": {"path": "string"}, "optional": {}, "approval": false},
+  "move_file":  {"required": {"source": "string", "destination": "string"}, "optional": {}, "approval": true},
+  "delete_file": {"required": {"path": "string"}, "optional": {}, "approval": true},
+  "run_project_tests": {"required": {"directory": "string"}, "optional": {}, "approval": true},
+  "set_volume": {"required": {"level": "integer"}, "optional": {}, "approval": false},
+  "send_notification": {"required": {"message": "string"}, "optional": {}, "approval": false}
+}
