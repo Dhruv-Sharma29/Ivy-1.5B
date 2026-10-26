@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "note": "Starting mixture is a hypothesis to be tested in 300M pilots, not a validated recipe. Shares are of TOKENS.",
+  "sources": [
+    {
+      "id": "fineweb-edu",
+      "hf_repo": "HuggingFaceFW/fineweb-edu",
+      "subset": "sample-10BT",
+      "text_field": "text",
+      "domain": "general",
+      "share": 0.6,
+      "access": "open",
+      "license_review": "Dataset card license: odc-by (read via HF API 2026-10-06, not legal review). Terms of the underlying Common Crawl web pages are NOT reviewed; read the card's licensing/limitations sections before any public release.",
+      "reviewed": false
+    },
+    {
+      "id": "the-stack-v2",
+      "hf_repo": "bigcode/the-stack-v2",
+      "subset": "TODO: pick languages (e.g. Python, Swift, Markdown, JSON, YAML, Shell)",
+      "text_field": "content",
+      "domain": "code",
+      "share": 0.25,
+      "access": "gated: HF terms acceptance required; the HF dataset holds file IDs only, file contents come from Software Heritage S3, so a separate download/join step is needed | verified 2026-10-06: gated=auto on HF (needs an HF account that accepted the terms and a token; no token is configured on this machine); card license is 'other', i.e. per-file licences apply.",
+      "license_review": "TODO: filter to permissive licenses; honour opt-out; add reviewed technical docs",
+      "reviewed": false
+    },
+    {
+      "id": "finemath",
+      "hf_repo": "HuggingFaceTB/finemath",
+      "subset": "finemath-4plus",
+      "text_field": "text",
+      "domain": "math",
+      "share": 0.15,
+      "access": "open",
+      "license_review": "Dataset card license: odc-by (read via HF API 2026-10-06, not legal review). Subset finemath-4plus is PROVISIONAL (configs available: finemath-3plus, finemath-4plus, infiwebmath-3plus, infiwebmath-4plus); 4plus is the higher-quality, smaller filter. Upstream page terms not reviewed.",
+      "reviewed": false
+    }
+  ],
+  "split_policy": "document-level, deterministic: sha256(source_id + doc_key) mod 1000 < 5 -> validation",
+  "dedup": "exact (sha256 of normalized text) + near-duplicate (word-5-gram MinHash-LSH, threshold 0.8, src/ivy_model/cleaning.py). At 0.8 only near-identical copies are caught (1% word edits caught, 5% not); tune the threshold on a real sample. Throughput measured on synthetic text only.",
+  "eval_decontamination": "13-gram overlap removal implemented (--decontaminate-file) for eval items with >=13 words. NOT sufficient for the short Ivy scenario utterances: those are guarded on the SFT side with `python -m ivy_model.cleaning check-sft`. No benchmark files have been supplied yet, so nothing has been decontaminated.",
+  "secret_scrubbing": "regex scrub of common token formats, private-key blocks, emails and `key = \"value\"` assignments -> <SECRET>/<EMAIL>. A floor, not a guarantee: misses unknown formats, over-matches some code; no other PII (names, phones, addresses) handled."
+}
