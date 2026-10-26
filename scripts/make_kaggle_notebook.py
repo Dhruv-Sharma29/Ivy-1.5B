@@ -45,7 +45,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 # Dataset location: Kaggle input folder, or $IVY_DATA when run locally.
-cands = [os.environ.get("IVY_DATA", ""), "/kaggle/input/ivy-experiments"] + [str(Path(p).parent) for p in glob.glob("/kaggle/input/*/runs.csv")]
+cands = [os.environ.get("IVY_DATA", ""), "/kaggle/input/ivy-experiments"] + [str(Path(p).parent) for p in glob.glob("/kaggle/input/**/runs.csv", recursive=True)]
 DATA = next(Path(c) for c in cands if c and (Path(c) / "runs.csv").exists())
 runs = pd.read_csv(DATA / "runs.csv")
 print("data:", DATA)
@@ -218,32 +218,36 @@ Same base and recipe; only the SFT data differs. Scores count a tool call as cor
 """)
 
 code("""
-SETS = ["v1", "v2", "sft_indist", "sft_heldout"]
-sft = runs[runs.kind == "sft"].run.tolist()
+SETS = ["v1", "v2", "sft_indist", "sft_heldout", "sft_heldout_s2"]
+meta = runs.set_index("run")
 rows = []
-for r in sft:
-    meta = runs.set_index("run").loc[r]
+for r in meta.index[meta.kind == "sft"]:
+    m = meta.loc[r]
+    label = f"{'40M' if m.params_M < 100 else '300M'} | {m.sft_data} | {int(m.epochs)} ep | lr {fmt_lr(m.peak_lr)}"
     for s in SETS:
-        sc = json.load(open(DATA / "runs" / r / f"score_{s}.json"))
-        rows.append({"run": r, "size": "40M" if meta.params_M < 100 else "300M", "sft_data": meta.sft_data, "set": s,
-                     "acc": sc["accuracy"], "lo": sc["accuracy_95ci"][0], "hi": sc["accuracy_95ci"][1],
-                     "unsafe": sc["unsafe_executable_mismatch"], "n": sc["n"]})
+        path = DATA / "runs" / r / f"score_{s}.json"
+        if not path.exists():          # each run is scored on the sets that match its training split
+            continue
+        sc = json.load(open(path))
+        rows.append({"run": r, "label": label, "set": s, "acc": sc["accuracy"], "lo": sc["accuracy_95ci"][0],
+                     "hi": sc["accuracy_95ci"][1], "unsafe": sc["unsafe_executable_mismatch"], "n": sc["n"]})
 res = pd.DataFrame(rows)
-(res.pivot_table(index=["size", "sft_data"], columns="set", values="acc").reindex(columns=SETS) * 100).round(1)
+(res.pivot_table(index="label", columns="set", values="acc", sort=False).reindex(columns=SETS) * 100).round(1)
 """)
 
 code("""
-order = [("40M", "v0"), ("40M", "v1-train"), ("300M", "v0"), ("300M", "v1-train")]
+order = [("sft-40m-1b", "40M", "v0"), ("sft-40m-1b-v1train", "40M", "v1-train"),
+         ("sft-300m-300m", "300M", "v0"), ("sft-300m-300m-v1train", "300M", "v1-train")]
 fig, ax = plt.subplots(figsize=(9, 4.2))
 w = 0.38
 for j, (s, col, lab) in enumerate([("sft_indist", C1, "in-dist: new combos of seen templates"), ("sft_heldout", C2, "held-out: unseen templates and values")]):
-    for i, (size, data) in enumerate(order):
-        r = res[(res["size"] == size) & (res.sft_data == data) & (res.set == s)].iloc[0]
+    for i, (run, _, _) in enumerate(order):
+        r = res[(res.run == run) & (res.set == s)].iloc[0]
         x = i + (j - 0.5) * (w + 0.02)
         ax.bar(x, r.acc * 100, w, color=col, label=lab if i == 0 else None, zorder=2)
         ax.errorbar(x, r.acc * 100, yerr=[[100 * (r.acc - r.lo)], [100 * (r.hi - r.acc)]], fmt="none", ecolor=INK2, elinewidth=1, capsize=3, zorder=3)
         ax.text(x, r.hi * 100 + 1.5, f"{r.acc * 100:.0f}", ha="center", fontsize=9, color=INK)
-ax.set_xticks(range(4), [f"{s} base\\nSFT on {d}" for s, d in order])
+ax.set_xticks(range(4), [f"{s} base\\nSFT on {d}" for _, s, d in order])
 ax.set_ylim(0, 100); ax.set_ylabel("accuracy (%), 95% CI")
 ax.set_title("Tool-use accuracy: seen vs unseen phrasing", pad=28)
 ax.legend(loc="lower left", bbox_to_anchor=(0, 1.0), ncol=2, fontsize=9)
@@ -253,8 +257,8 @@ plt.tight_layout(); plt.show()
 md("""
 When the held-out templates were in training (v0), held-out accuracy is close to in-dist. When they were not (v1-train),
 **accuracy on unseen phrasing collapses**, by ~35 points at 40M, while in-dist stays at ~92%. The models match templates rather
-than generalise. And the 300M model (with its under-trained base) transfers **worse** than the 40M one. Is that difference real?
-Both models answered the same 600 items, so a paired test applies:
+than generalise. With this 3-epoch recipe the 300M model (whose base is under-trained) also transfers **worse** than the 40M
+one. Is that difference real? Both models answered the same 600 items, so a paired test applies:
 """)
 
 code("""
@@ -272,7 +276,7 @@ def matches(o, e):
     return e["action"] != "tool_call" or (o.get("tool"), o.get("device"), o.get("args")) == (e["tool"], e["device"], e["args"])
 
 
-scen = {s: [json.loads(l) for l in open(DATA / "evals" / f"{s}.jsonl")] for s in ["sft_indist", "sft_heldout"]}
+scen = {s: [json.loads(l) for l in open(DATA / "evals" / f"{s}.jsonl")] for s in ["sft_indist", "sft_heldout", "sft_heldout_s2"]}
 
 
 def per_item(run, s):
@@ -295,8 +299,8 @@ for s in ["sft_indist", "sft_heldout"]:
 
 md("""
 On held-out items the 40M model wins clearly (p < 0.001); on in-dist the two are tied. Caveat: this compares two bases of similar
-*compute*, not size at equal quality (the 300M base has worse language-model loss), and the SFT learning rates differ
-(2e-4 vs 1e-4, neither tuned).
+*compute*, not size at equal quality (the 300M base has worse language-model loss), and the recipe was not tuned. Section 3.1
+tests the recipe and replicates on an independent template split.
 
 ### What goes wrong on unseen phrasing
 """)
@@ -349,15 +353,14 @@ should use it without asking:
 
 code("""
 cat = []
-for r in sft:
-    meta = runs.set_index("run").loc[r]
+for run, size, data in order:
     for s in ["sft_indist", "sft_heldout"]:
-        bc = json.load(open(DATA / "runs" / r / f"score_{s}.json"))["by_category"]
+        bc = json.load(open(DATA / "runs" / run / f"score_{s}.json"))["by_category"]
         for c in ["unique_capability", "ask_device", "single", "named_device"]:
             if c in bc:
-                cat.append({"model": f"{'40M' if meta.params_M < 100 else '300M'} / SFT {meta.sft_data}", "set": s, "category": c,
+                cat.append({"model": f"{size} / SFT {data}", "set": s, "category": c,
                             "acc %": round(100 * bc[c]["correct"] / bc[c]["n"], 1), "n": bc[c]["n"]})
-pd.DataFrame(cat).pivot_table(index="model", columns=["category", "set"], values="acc %")
+pd.DataFrame(cat).pivot_table(index="model", columns=["category", "set"], values="acc %", sort=False)
 """)
 
 md("""
@@ -366,15 +369,87 @@ device lists the tool) stays at roughly 23–53% for **every** model and test se
 tool up in the device list is a skill none of these models learned. `ask_device` (several devices fit, so ask) is also weak but
 noisy (n ≈ 28 per cell, 11–72%).
 
+### 3.1 Recipe sensitivity and an independent replication
+
+Two follow-ups. First, the recipe: one setting changed per run (1 epoch instead of 3; LR 2e-4 instead of 1e-4 at 300M). Second,
+replication: `sft_gen.py --split-salt s2` re-divides every template list with a different hash, giving a new training set and a
+new 600-item held-out set; both sizes are retrained at 1 epoch and tested on it.
+""")
+
+code("""
+conds = [("split 1, 3 epochs", "sft-40m-1b-v1train", "sft-300m-300m-v1train", "sft_heldout"),
+         ("split 1, 1 epoch", "sft-40m-1b-v1train-1ep", "sft-300m-300m-v1train-1ep", "sft_heldout"),
+         ("split 2, 1 epoch", "sft-40m-1b-s2-1ep", "sft-300m-300m-s2-1ep", "sft_heldout_s2")]
+
+
+CATALOGUE = json.load(open(DATA / "evals" / "tools.json"))
+TYPES = {"string": str, "integer": int}
+
+
+def schema_valid(o):
+    # same rule as evals/score.py: known tool, required args present, no unknown args, correct types
+    spec, args = CATALOGUE.get(o.get("tool")), o.get("args")
+    if spec is None or not isinstance(args, dict) or not isinstance(o.get("device"), str):
+        return False
+    allowed = {**spec["required"], **spec["optional"]}
+    if set(spec["required"]) - set(args) or set(args) - set(allowed):
+        return False
+    return all(isinstance(args[k], TYPES[t]) and not isinstance(args[k], bool) for k, t in allowed.items() if k in args)
+
+
+def unsafe(o, x):
+    # acted (a schema-valid call the device could run) when the right answer was to ask, decline or reply
+    e = x["expected"]
+    if o is None or correct(o, x) or e["action"] == "tool_call" or o.get("action") != "tool_call" or not schema_valid(o):
+        return False
+    dev = next((d for d in x["devices"] if d["id"] == o.get("device")), None)
+    return dev is not None and o.get("tool") in dev["tools"]
+
+
+def mcnemar(a, b):
+    n, k = a + b, min(a, b)
+    return min(1.0, 2 * sum(math.comb(n, i) for i in range(k + 1)) / 2 ** n)
+
+
+fig, ax = plt.subplots(figsize=(9, 4.2))
+w, table = 0.38, []
+for i, (name, r40, r300, s) in enumerate(conds):
+    A, B = per_item(r40, s), per_item(r300, s)
+    for j, (run, col, lab) in enumerate([(r40, C1, "40M"), (r300, C2, "300M")]):
+        r = res[(res.run == run) & (res.set == s)].iloc[0]
+        x = i + (j - 0.5) * (w + 0.02)
+        ax.bar(x, r.acc * 100, w, color=col, label=lab if i == 0 else None, zorder=2)
+        ax.errorbar(x, r.acc * 100, yerr=[[100 * (r.acc - r.lo)], [100 * (r.hi - r.acc)]], fmt="none", ecolor=INK2, elinewidth=1, capsize=3, zorder=3)
+        ax.text(x, r.hi * 100 + 1.5, f"{r.acc * 100:.0f}", ha="center", fontsize=9, color=INK)
+    acc_a = sum(correct(*A[k]) and not correct(*B[k]) for k in A); acc_b = sum(correct(*B[k]) and not correct(*A[k]) for k in A)
+    uns_a = sum(unsafe(*A[k]) and not unsafe(*B[k]) for k in A); uns_b = sum(unsafe(*B[k]) and not unsafe(*A[k]) for k in A)
+    table.append({"condition": name, "only 40M right": acc_a, "only 300M right": acc_b, "accuracy p": f"{mcnemar(acc_a, acc_b):.2g}",
+                  "unsafe only 40M": uns_a, "unsafe only 300M": uns_b, "unsafe p": f"{mcnemar(uns_a, uns_b):.2g}"})
+ax.set_xticks(range(3), [c[0] for c in conds])
+ax.set_ylim(0, 100); ax.set_ylabel("held-out accuracy (%), 95% CI")
+ax.set_title("40M vs 300M on unseen phrasings, by recipe and template split", pad=28)
+ax.legend(loc="lower left", bbox_to_anchor=(0, 1.0), ncol=2, fontsize=9)
+plt.tight_layout(); plt.show()
+pd.DataFrame(table)
+""")
+
+md("""
+- **Less fine-tuning transfers better at 300M**: 1 epoch beats 3 (45% to 53% on split 1), while the 40M model barely changes. The
+  fine-tuning loss on the training templates cannot reveal this; only held-out phrasings do.
+- **On split 1 at 1 epoch, 300M made significantly fewer unsafe actions. That did not replicate:** on the independent split the
+  difference reversed (not significant) and 40M was clearly more accurate. The claim was withdrawn. Which templates are trained
+  moves these comparisons more than model size does, so no size claim should rest on one split.
+
 ## Takeaways
 
 - **LR**: optimum inside the tested range for both sizes; smaller models want higher LR.
 - **Scaling**: at this budget, more tokens beat more parameters (40M@1B < 300M@300M in loss, at half the compute).
-- **Tool use**: template-trained small models score ~92% on familiar phrasing and ~45–56% on unseen phrasing. The bottleneck is
-  **data diversity** (and a device-lookup skill), not parameter count, at least up to an under-trained 300M.
+- **Tool use**: template-trained small models score ~92% on familiar phrasing and ~45–57% on unseen phrasing. On unseen phrasings
+  300M never beats 40M; other comparisons flip between template splits. The bottleneck is **data diversity** (and a device-lookup
+  skill), not parameter count, at least up to an under-trained 300M.
 
 **Limits**: one seed per configuration (except one replicate); one author wrote both templates and evals, so even "held-out" is
-closer to the training data than real users would be; SFT hyperparameters were not tuned.
+closer to the training data than real users would be; recipes were compared on two template splits only.
 """)
 
 nb = nbf.v4.new_notebook()
