@@ -1,0 +1,11 @@
+name: tests
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv venv --python 3.12 && sed -e 's/+cu130//' -e '/^triton/d' requirements.lock.txt > /tmp/req.txt && uv pip install --torch-backend cpu -r /tmp/req.txt
+      - run: PYTHONPATH=src .venv/bin/python -m pytest -q
+# CPU-only torch build of the locked versions; triton is GPU-only
