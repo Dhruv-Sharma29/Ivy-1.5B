@@ -194,7 +194,8 @@ Pretraining text comes from [FineWeb-Edu](https://huggingface.co/datasets/Huggin
 training data is generated from hand-written templates (`src/ivy_model/sft_gen.py`); no teacher model or third-party model output
 is used.
 
-No licence has been chosen for this code or any future weights. Until a `LICENSE` file is added, all rights are reserved.
+The code, tokenizer and evaluation sets in this repository are licensed under the [Apache License 2.0](LICENSE). The licence for
+any future weights will be chosen at release and stated in the model card. The pretraining datasets keep their own ODC-By terms.
 
 ## Acknowledgements
 
